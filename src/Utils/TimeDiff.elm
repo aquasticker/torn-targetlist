@@ -4,6 +4,7 @@ module Utils.TimeDiff exposing
     , between
     , formatAsClock
     , formatInHuman
+    , formatInHumanSimple
     , inFuture
     )
 
@@ -105,16 +106,16 @@ formatTimePart int =
 
 
 formatInHuman : TimeDiff -> String
-formatInHuman (TimeDiff data) =
-    if data.future then
-        "in " ++ formatInHumanData data
+formatInHuman timeDiff =
+    if inFuture timeDiff then
+        "in " ++ formatInHumanSimple timeDiff
 
     else
-        formatInHumanData data ++ " ago"
+        formatInHumanSimple timeDiff ++ " ago"
 
 
-formatInHumanData : Data -> String
-formatInHumanData data =
+formatInHumanSimple : TimeDiff -> String
+formatInHumanSimple (TimeDiff data) =
     if data.days > 365 then
         formatYears data.days
 

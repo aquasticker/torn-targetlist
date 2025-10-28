@@ -654,7 +654,11 @@ temporaryStatus ts posix value =
             TimeDiff.between posix ts
     in
     if TimeDiff.inFuture diff then
-        value (TimeDiff.formatAsClock diff)
+        if TimeDiff.asSeconds diff < (24 * 60 * 60) then
+            value (TimeDiff.formatAsClock diff)
+
+        else
+            value (TimeDiff.formatInHumanSimple diff)
 
     else
         ( "Okay"
