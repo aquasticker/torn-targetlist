@@ -1,0 +1,24 @@
+{
+  "name": "torn.chaining",
+  "displayName": "Torn Chaining",
+  "version": "1.0.0",
+  "description": "Torn Chaining",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server -c webpack.config.dev.js --mode development",
+    "build": "webpack -c webpack.config.prod.js --mode production"
+  },
+  "keywords": [],
+  "author": "aquastick",
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "elm-hot-webpack-loader": "^1.1.8",
+    "elm-webpack-loader": "^8.0.0",
+    "file-loader": "^6.2.0",
+    "loader-utils": "^3.3.1",
+    "webpack": "5.102.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "5.2.2"
+  },
+  "dependencies": {}
+}

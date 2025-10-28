@@ -1,0 +1,234 @@
+.chain-main {
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+.chain-player {
+    border: 1px solid transparent;
+    border-top: 1px solid #aaa;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.chain-player:hover {
+    filter: brightness(95%);
+}
+
+.chain-header {
+    padding: 5px;
+}
+
+.chain-input,
+.chain-header input {
+    padding: 2px 10px;
+    margin-right: 10px;
+}
+
+.chain-progressbar {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    height: 5px;
+    padding: 1px;
+    position: relative;
+}
+
+.chain-progressbar-inner {
+    border-radius: 5px;
+    border-right-width: 1px;
+    height: 5px;
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
+    vertical-align: middle;
+    z-index: 3;
+    background: #708bdb;
+}
+
+.chain-player-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chain-player-online {
+    width: 10%;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.chain-player-info {
+    flex-grow: 1;
+}
+
+.chain-progressbar-text {
+    color: #888;
+}
+
+.chain-player-name {
+    font-weight: 700;
+    font-size: 13px;
+    color: black;
+    text-decoration: none;
+    padding-bottom: 2px;
+    display: block;
+}
+
+.chain-player-name:hover {
+    text-decoration: underline;
+}
+
+.chain-life-wrapper {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 25%;
+    text-align: center
+}
+
+.chain-user-status-ok {
+    color: var(--user-status-green-color);
+}
+
+.chain-user-status-travel {
+    color: var(--user-status-blue-color);
+}
+
+.chain-user-status-hospital {
+    color: var(--user-status-red-color);
+}
+
+.chain-online-status {
+    width: 12px;
+    height: 12px;
+    border-radius: 100%;
+    border: 1px solid #aaa;
+}
+
+.chain-online-status-online {
+    background-color: var(--user-status-green-color);
+}
+
+.chain-online-status-idle {
+    background-color: orange;
+}
+
+.chain-online-status-offline {
+    background-color: #ddd;
+}
+
+.chain-player-buttons {
+    padding-left: 5px;
+}
+
+.chain-player-buttons button {
+    padding: 3px;
+    cursor: pointer;
+    color: #888;
+}
+
+.chain-player-buttons button:hover {
+    color: #000;
+}
+
+.chain-player-ok-active {
+    background: #a1d99b;
+}
+
+.chain-player-ok {
+    background: #c7e9c0
+}
+
+.chain-player-hosp-short {
+    background: #fcbba1;
+}
+
+.chain-player-hosp {
+    background: #fee0d2;
+}
+
+.chain-player-travel {
+    background: #deebf7;
+}
+
+.chain-player-last-action {
+    color: #888;
+    font-size: 12px;
+    padding-top: 2px;
+}
+
+.chain-button {
+    border: 1px solid #999;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chain-error {
+    padding: 5px;
+}
+
+.chain-error h3.chain-error-header {
+    margin-top: 10px;
+}
+
+.chain-flex-split {
+    display: flex;
+    justify-items: space-between;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.chain-button-running {
+    color: #333;
+    height: 24px;
+    margin-left: 0.5em;
+}
+
+.chain-last-update-outdated .chain-player-name {
+    color: #999;
+}
+
+.chain-settings-page {
+    padding: 10px;
+}
+
+.chain-settings-page input,
+.chain-settings-page select {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 1em;
+}
+
+.chain-input-help {
+    margin-top: -0.5em;
+    margin-bottom: 1em;
+    font-size: 0.95em;
+    color: #999;
+}
+
+.chain-settings-page label {
+    display: block;
+    font-weight: 700;
+    font-size: 16px;
+    padding-bottom: 4px;
+}
+
+.chain-button svg,
+.chain-player-delete svg {
+    stroke: #ddd;
+}
+
+.chain-button:hover svg,
+.chain-player-delete:hover svg {
+    stroke: #222;
+}
+
+.chain-player-jail {
+    background: #D2B48C;
+}
+
+.chain-player-jail-short {
+    background: #B99976;
+}
