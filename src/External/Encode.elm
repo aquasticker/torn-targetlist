@@ -166,6 +166,12 @@ encodeUserStatus userStatus =
                 , ( "until", encodePosix posix )
                 ]
 
+        FederalJail posix ->
+            Encode.object <|
+                [ ( "status", Encode.string "Federal" )
+                , ( "until", encodePosix posix )
+                ]
+
         Abroad country ->
             Encode.object <|
                 [ ( "status", Encode.string "Abroad" )

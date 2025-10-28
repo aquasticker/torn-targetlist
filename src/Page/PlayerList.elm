@@ -309,11 +309,11 @@ update apiToken msg model =
                     , OutMessage.none
                     )
 
-                Err _ ->
+                Err err ->
                     ( model
                     , Cmd.none
-                      -- , OutMessage.showApiError (Api.errorToString err)
-                    , OutMessage.none
+                    , OutMessage.showApiError (Api.errorToString err)
+                      --, OutMessage.none
                     )
 
         MsgChangePlayerId val ->
@@ -554,6 +554,9 @@ getNextRefresh currentTs user =
                 ActivityActive ->
                     posixAdd 2000 user.asOf
 
+        FederalJail posix ->
+            posix
+
 
 getPlayerActivity : Posix -> Player -> PlayerActivity
 getPlayerActivity currentTs user =
@@ -595,21 +598,13 @@ getPlayerStatus ts userStatus =
             )
 
         Hospital posix ->
-            let
-                diff : TimeDiff.TimeDiff
-                diff =
-                    TimeDiff.between posix ts
-            in
-            if TimeDiff.inFuture diff then
-                ( "In hospital for " ++ TimeDiff.formatAsClock diff
-                , "chain-user-status-hospital"
-                , Hospital posix
-                )
-
-            else
-                ( "Okay"
-                , "chain-user-status-ok"
-                , Okay
+            temporaryStatus ts
+                posix
+                (\remaining ->
+                    ( "In hospital for " ++ remaining
+                    , "chain-user-status-hospital"
+                    , Hospital posix
+                    )
                 )
 
         Abroad country ->
@@ -631,22 +626,41 @@ getPlayerStatus ts userStatus =
             )
 
         Jail posix ->
-            let
-                diff : TimeDiff.TimeDiff
-                diff =
-                    TimeDiff.between posix ts
-            in
-            if TimeDiff.inFuture diff then
-                ( "In jail for " ++ TimeDiff.formatAsClock diff
-                , "chain-user-status-jail"
-                , Jail posix
+            temporaryStatus ts
+                posix
+                (\remaining ->
+                    ( "In jail for " ++ remaining
+                    , "chain-user-status-jail"
+                    , Jail posix
+                    )
                 )
 
-            else
-                ( "Okay"
-                , "chain-user-status-ok"
-                , Okay
+        FederalJail posix ->
+            temporaryStatus ts
+                posix
+                (\remaining ->
+                    ( "In federal jail for " ++ remaining
+                    , "chain-user-status-federal-jail"
+                    , FederalJail posix
+                    )
                 )
+
+
+temporaryStatus : Posix -> Posix -> (String -> ( String, String, PlayerStatus )) -> ( String, String, PlayerStatus )
+temporaryStatus ts posix value =
+    let
+        diff : TimeDiff.TimeDiff
+        diff =
+            TimeDiff.between posix ts
+    in
+    if TimeDiff.inFuture diff then
+        value (TimeDiff.formatAsClock diff)
+
+    else
+        ( "Okay"
+        , "chain-user-status-ok"
+        , Okay
+        )
 
 
 playerOrder : Posix -> Player -> Player -> Order
@@ -725,17 +739,7 @@ statusOrderValue now userStatus =
             100000
 
         Hospital ts ->
-            let
-                diff =
-                    TimeDiff.between ts now
-
-                remainingSecs : Int
-                remainingSecs =
-                    round (TimeDiff.asSeconds diff)
-                        |> min 99999
-                        |> max 0
-            in
-            200000 + remainingSecs
+            temporaryStatusOrderValue 200000 now ts
 
         ReturningFrom _ ->
             300000
@@ -747,17 +751,25 @@ statusOrderValue now userStatus =
             500000
 
         Jail ts ->
-            let
-                diff =
-                    TimeDiff.between ts now
+            temporaryStatusOrderValue 600000 now ts
 
-                remainingSecs : Int
-                remainingSecs =
-                    round (TimeDiff.asSeconds diff)
-                        |> min 99999
-                        |> max 0
-            in
-            600000 + remainingSecs
+        FederalJail ts ->
+            temporaryStatusOrderValue 700000 now ts
+
+
+temporaryStatusOrderValue : Int -> Posix -> Posix -> Int
+temporaryStatusOrderValue base now ts =
+    let
+        diff =
+            TimeDiff.between ts now
+
+        remainingSecs : Int
+        remainingSecs =
+            round (TimeDiff.asSeconds diff)
+                |> min 99999
+                |> max 0
+    in
+    base + remainingSecs
 
 
 getPlayerBlockClass : Posix -> Player -> String
@@ -800,3 +812,10 @@ getPlayerBlockClass now user =
 
             else
                 "chain-player-jail"
+
+        FederalJail ts ->
+            if posixDiff ts now < (3 * 60 * 1000) then
+                "chain-player-federal-jail-short"
+
+            else
+                "chain-player-federal-jail"

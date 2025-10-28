@@ -232,3 +232,9 @@
 .chain-player-jail-short {
     background: #B99976;
 }
+
+
+.chain-player-jail-federal-jail-short,
+.chain-player-federal-jail {
+    background: #e8e8e8;
+}

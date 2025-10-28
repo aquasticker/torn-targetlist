@@ -61,6 +61,7 @@ type PlayerStatus
     | Abroad Country
     | TravelingTo Country
     | ReturningFrom Country
+    | FederalJail Posix
 
 
 type alias Player =

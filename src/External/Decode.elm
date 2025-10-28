@@ -135,6 +135,10 @@ userStatusDecoder =
                     Decode.succeed Jail
                         |> required "until" posixDecoder
 
+                "Federal" ->
+                    Decode.succeed FederalJail
+                        |> required "until" posixDecoder
+
                 "Abroad" ->
                     Decode.succeed Abroad
                         |> required "country" countryDecoder

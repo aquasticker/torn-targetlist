@@ -69,6 +69,9 @@ userStatusMapper { state, until, description } =
         ( "Hospital", Just ts ) ->
             Json.Decode.succeed (Hospital (Time.millisToPosix (ts * 1000)))
 
+        ( "Federal", Just ts ) ->
+            Json.Decode.succeed (FederalJail (Time.millisToPosix (ts * 1000)))
+
         ( "Jail", Just ts ) ->
             Json.Decode.succeed (Jail (Time.millisToPosix (ts * 1000)))
 
