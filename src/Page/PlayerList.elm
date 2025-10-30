@@ -312,8 +312,8 @@ update apiToken msg model =
                 Err err ->
                     ( model
                     , Cmd.none
-                    , OutMessage.showApiError (Api.errorToString err)
-                      --, OutMessage.none
+                      -- , OutMessage.showApiError (Api.errorToString err)
+                    , OutMessage.none
                     )
 
         MsgChangePlayerId val ->
