@@ -2,13 +2,14 @@ module External.Decode exposing (messageDecoder, playerDecoder)
 
 import External.Message exposing (Message(..))
 import Json.Decode as Decode exposing (Decoder)
-import Json.Decode.Pipeline exposing (required)
+import Json.Decode.Pipeline exposing (optional, required)
 import Model.Country
     exposing
         ( Country
         , countryFromCode
         )
 import Model.Life exposing (Life, lifeDecoder)
+import Model.Location exposing (Location(..))
 import Model.Player
     exposing
         ( DonatorStatus(..)
@@ -130,6 +131,7 @@ userStatusDecoder =
                 "Hospital" ->
                     Decode.succeed Hospital
                         |> required "until" posixDecoder
+                        |> optional "country" (countryDecoder |> Decode.map LocationAbroad) LocationTorn
 
                 "Jail" ->
                     Decode.succeed Jail

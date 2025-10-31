@@ -1,5 +1,7 @@
 module Model.Country exposing (..)
 
+import List.Extra
+
 
 type Country
     = Mexico
@@ -12,6 +14,7 @@ type Country
     | UAE
     | SouthAfrica
     | Japan
+    | China
 
 
 countryCode : Country -> String
@@ -47,6 +50,9 @@ countryCode country =
         Japan ->
             "JP"
 
+        China ->
+            "CN"
+
 
 countryName : Country -> String
 countryName country =
@@ -80,6 +86,9 @@ countryName country =
 
         Japan ->
             "Japan"
+
+        China ->
+            "China"
 
 
 countryFromCode : String -> Maybe Country
@@ -115,6 +124,9 @@ countryFromCode code =
         "JP" ->
             Just Japan
 
+        "CN" ->
+            Just China
+
         _ ->
             Nothing
 
@@ -122,44 +134,40 @@ countryFromCode code =
 detectCountry : String -> Maybe Country
 detectCountry string =
     let
-        lowercase =
+        haystack =
             String.toLower string
+
+        contains : ( String, Country ) -> Bool
+        contains tuple =
+            let
+                needle =
+                    Tuple.first tuple
+            in
+            String.contains needle haystack
+
+        mappings =
+            [ ( "mexico", Mexico )
+            , ( "mexican", Mexico )
+            , ( "canada", Canada )
+            , ( "canadian", Canada )
+            , ( "cayman", CaymanIslands )
+            , ( "hawaii", Hawaii )
+            , ( "united kingdom", UnitedKingdom )
+            , ( "british", UnitedKingdom )
+            , ( "japan", Japan )
+            , ( "japanese", Japan )
+            , ( "china", China )
+            , ( "chinese", China )
+            , ( "switzerland", Switzerland )
+            , ( "swiss", Switzerland )
+            , ( "south africa", SouthAfrica )
+            , ( "argentina", Argentina )
+            , ( "argentinian", Argentina )
+            , ( "uae", UAE )
+            , ( "emirates", UAE )
+            , ( "emirati", UAE )
+            ]
     in
-    if String.contains "mexico" lowercase then
-        Just Mexico
-
-    else if String.contains "canada" lowercase then
-        Just Canada
-
-    else if String.contains "cayman islands" lowercase then
-        Just CaymanIslands
-
-    else if String.contains "hawaii" lowercase then
-        Just Hawaii
-
-    else if String.contains "united kingdom" lowercase then
-        Just UnitedKingdom
-
-    else if String.contains "japan" lowercase then
-        Just Japan
-
-    else if String.contains "china" lowercase then
-        Just CaymanIslands
-
-    else if String.contains "switzerland" lowercase then
-        Just Switzerland
-
-    else if String.contains "south africa" lowercase then
-        Just SouthAfrica
-
-    else if String.contains "argentina" lowercase then
-        Just Argentina
-
-    else if String.contains "uae" lowercase then
-        Just UAE
-
-    else if String.contains "emirates" lowercase then
-        Just UAE
-
-    else
-        Nothing
+    mappings
+        |> List.Extra.find contains
+        |> Maybe.map Tuple.second

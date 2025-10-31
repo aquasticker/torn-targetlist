@@ -11,8 +11,9 @@ import Html.Events as Events
 import Http exposing (Error(..))
 import Icons.Icons as Icons
 import Maybe.Extra exposing (isJust)
-import Model.Country exposing (countryName)
+import Model.Country exposing (Country(..), countryName)
 import Model.Life exposing (Life, LifeValue, getLife)
+import Model.Location exposing (Location(..))
 import Model.Player exposing (OnlineStatus(..), Player, PlayerId, PlayerStatus(..), createPlayerId, getLastActivity, getPlayerId)
 import OutMessage exposing (OutMessage)
 import Parser
@@ -309,7 +310,7 @@ update apiToken msg model =
                     , OutMessage.none
                     )
 
-                Err err ->
+                Err _ ->
                     ( model
                     , Cmd.none
                       -- , OutMessage.showApiError (Api.errorToString err)
@@ -523,7 +524,7 @@ getNextRefresh currentTs user =
                 ActivityActive ->
                     posixAdd 1000 user.asOf
 
-        Hospital posix ->
+        Hospital posix _ ->
             case getPlayerActivity currentTs user of
                 ActivityInactiveOld ->
                     posix
@@ -597,13 +598,13 @@ getPlayerStatus ts userStatus =
             , Okay
             )
 
-        Hospital posix ->
+        Hospital posix location ->
             temporaryStatus ts
                 posix
                 (\remaining ->
-                    ( "In hospital for " ++ remaining
+                    ( getHospitalText remaining location
                     , "chain-user-status-hospital"
-                    , Hospital posix
+                    , Hospital posix location
                     )
                 )
 
@@ -742,7 +743,7 @@ statusOrderValue now userStatus =
         Okay ->
             100000
 
-        Hospital ts ->
+        Hospital ts _ ->
             temporaryStatusOrderValue 200000 now ts
 
         ReturningFrom _ ->
@@ -794,12 +795,19 @@ getPlayerBlockClass now user =
                 Offline _ ->
                     "chain-player-ok"
 
-        Hospital ts ->
-            if posixDiff ts now < (3 * 60 * 1000) then
-                "chain-player-hosp-short"
+        Hospital ts location ->
+            case ( location, posixDiff ts now < (3 * 60 * 1000) ) of
+                ( LocationTorn, True ) ->
+                    "chain-player-hosp-short"
 
-            else
-                "chain-player-hosp"
+                ( LocationTorn, False ) ->
+                    "chain-player-hosp"
+
+                ( LocationAbroad _, True ) ->
+                    "chain-player-abroad-hosp-short"
+
+                ( LocationAbroad _, False ) ->
+                    "chain-player-abroad-hosp"
 
         Abroad _ ->
             "chain-player-travel"
@@ -823,3 +831,45 @@ getPlayerBlockClass now user =
 
             else
                 "chain-player-federal-jail"
+
+
+getHospitalText : String -> Location -> String
+getHospitalText remaining location =
+    case location of
+        LocationTorn ->
+            "In hospital for " ++ remaining
+
+        LocationAbroad country ->
+            case country of
+                Mexico ->
+                    "In a Mexican hospital for " ++ remaining
+
+                Canada ->
+                    "In a Canadian hospital for " ++ remaining
+
+                CaymanIslands ->
+                    "In a Caymanian hospital for " ++ remaining
+
+                Hawaii ->
+                    "In a Hawaiian hospital for " ++ remaining
+
+                UnitedKingdom ->
+                    "In a British hospital for " ++ remaining
+
+                Switzerland ->
+                    "In a Swiss hospital for " ++ remaining
+
+                Argentina ->
+                    "In an Argentinian hospital for " ++ remaining
+
+                UAE ->
+                    "In an Emirati hospital for " ++ remaining
+
+                SouthAfrica ->
+                    "In a South African hospital for " ++ remaining
+
+                Japan ->
+                    "In a Japanese hospital for " ++ remaining
+
+                China ->
+                    "In a Chinese hospital for " ++ remaining

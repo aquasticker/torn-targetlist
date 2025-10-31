@@ -2,6 +2,7 @@ module Model.Player exposing (..)
 
 import Model.Country exposing (Country)
 import Model.Life exposing (Life)
+import Model.Location exposing (Location)
 import Time exposing (Posix(..))
 
 
@@ -56,7 +57,7 @@ getLastActivity onlineStatus =
 
 type PlayerStatus
     = Okay
-    | Hospital Posix
+    | Hospital Posix Location
     | Jail Posix
     | Abroad Country
     | TravelingTo Country

@@ -8,6 +8,7 @@ import Model.Country as Country
         ( Country
         )
 import Model.Life exposing (Life, createLife)
+import Model.Location exposing (Location(..))
 import Model.Player
     exposing
         ( DonatorStatus(..)
@@ -67,7 +68,11 @@ userStatusMapper { state, until, description } =
             Json.Decode.succeed Okay
 
         ( "Hospital", Just ts ) ->
-            Json.Decode.succeed (Hospital (Time.millisToPosix (ts * 1000)))
+            Json.Decode.succeed
+                (Hospital
+                    (Time.millisToPosix (ts * 1000))
+                    (resolveHospitalLocation description)
+                )
 
         ( "Federal", Just ts ) ->
             Json.Decode.succeed (FederalJail (Time.millisToPosix (ts * 1000)))
@@ -198,3 +203,10 @@ onlineStatusDecoder =
     in
     onlineStatusPayloadDecoder
         |> Json.Decode.andThen get
+
+
+resolveHospitalLocation : String -> Location
+resolveHospitalLocation =
+    Country.detectCountry
+        >> Maybe.map LocationAbroad
+        >> Maybe.withDefault LocationTorn

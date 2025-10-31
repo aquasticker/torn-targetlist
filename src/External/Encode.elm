@@ -9,6 +9,7 @@ import Model.Country
         , countryCode
         )
 import Model.Life exposing (Life, encodeLife)
+import Model.Location exposing (Location(..))
 import Model.Player
     exposing
         ( DonatorStatus(..)
@@ -154,11 +155,20 @@ encodeUserStatus userStatus =
                 [ ( "status", Encode.string "OK" )
                 ]
 
-        Hospital posix ->
-            Encode.object <|
-                [ ( "status", Encode.string "Hospital" )
-                , ( "until", encodePosix posix )
-                ]
+        Hospital posix location ->
+            case location of
+                LocationTorn ->
+                    Encode.object <|
+                        [ ( "status", Encode.string "Hospital" )
+                        , ( "until", encodePosix posix )
+                        ]
+
+                LocationAbroad country ->
+                    Encode.object <|
+                        [ ( "status", Encode.string "Hospital" )
+                        , ( "until", encodePosix posix )
+                        , ( "country", encodeCountry country )
+                        ]
 
         Jail posix ->
             Encode.object <|
